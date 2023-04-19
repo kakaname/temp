@@ -102,9 +102,13 @@ def train(dataset, epochs):
 
             if (epoch + 1) % 15 == 0:
                 checkpoint.save(file_prefix = checkpoint_prefix)
+        print("finished epoch")
 
     display.clear_output(wait=True)
     generate_and_save_images(generator, epochs, seed)
+
+def display_image(epoch_no):
+  return PIL.Image.open('image_at_epoch_{:04d}.png'.format(epoch_no))
 
 def generate_and_save_images(model, epoch, test_input):
     predictions = model(test_input, training=False)
@@ -116,7 +120,6 @@ def generate_and_save_images(model, epoch, test_input):
         plt.imshow(predictions[i,:,:,0] * 127.5 + 127.5, cmap='gray')
 
     plt.savefig('image_at_epoch_{:04d}.png'.format(epoch))
-    plt.show()
 
 train_dataset = tf.data.Dataset.from_tensor_slices(train_images).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
@@ -146,3 +149,23 @@ num_examples_to_generate = 16
 seed = tf.random.normal([num_examples_to_generate, noise_dim])
 
 train(train_dataset, EPOCHS)
+
+print("finished training")
+"""
+display_image(EPOCHS)
+
+anim_file = 'dcgan.gif'
+
+with imageio.get_writer(anim_file, mode='I') as writer:
+    filenames = glob.glob('image*.png')
+    filenames = sorted(filenames)
+
+    for filename in filenames:
+        image = imageio.imread(filename)
+        writer.append_data(image)
+
+    image = imageio.imread(filename)
+    writer.append_data(image)
+
+embed.embed_file(anim_file)
+"""
