@@ -120,6 +120,7 @@ def generate_and_save_images(model, epoch, test_input):
         plt.imshow(predictions[i,:,:,0] * 127.5 + 127.5, cmap='gray')
 
     plt.savefig('image_at_epoch_{:04d}.png'.format(epoch))
+    plt.close()
 
 train_dataset = tf.data.Dataset.from_tensor_slices(train_images).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
